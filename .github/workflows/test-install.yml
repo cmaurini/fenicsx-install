@@ -19,6 +19,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+    env:
+      # GitHub's Azure runners expose an RDMA device (mana_0) that MPICH's UCX
+      # layer tries to open and fails on, aborting MPI_Init. Confine UCX to
+      # loopback. This is a property of the runner, not of the installation:
+      # an ordinary laptop has no such device and needs neither variable.
+      UCX_TLS: tcp,self,sm
+      UCX_NET_DEVICES: lo
     defaults:
       run:
         shell: bash -el {0}   # -l so that conda activation is picked up

@@ -154,6 +154,21 @@ conda env remove -n fenicsx-0.11
 conda env create -f environment.yml
 ```
 
+### `UCX ERROR ... uct_iface_open ... failed`, then MPI aborts on `import dolfinx`
+
+Seen on cluster nodes and cloud virtual machines, not on laptops. MPICH tries
+to talk to a high-speed network device (InfiniBand, or Azure's `mana_0`) that it
+cannot open, and aborts before DOLFINx finishes importing. Confine it to
+loopback:
+
+```bash
+export UCX_TLS=tcp,self,sm
+export UCX_NET_DEVICES=lo
+```
+
+On a real cluster, prefer the site's own MPI module and ask the administrators
+which transport to use; the two lines above disable fast networking.
+
 ### `unsupported PMI version PMIx. Aborting.` when using `mpirun`
 
 Another MPI launcher is shadowing the one in the environment. This is common on
