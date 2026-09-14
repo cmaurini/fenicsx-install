@@ -50,7 +50,8 @@ jobs:
 
       - name: Report versions
         run: |
-          conda list "fenics-dolfinx|gmsh|pyvista|scifem"
+          # conda list accepts one regex argument, not multiple package names.
+          conda list "^(fenics-dolfinx|gmsh|pyvista|scifem)$"
           python -c "import dolfinx; assert dolfinx.__version__.startswith('0.11'), dolfinx.__version__"
 
       - name: Run the installation test
