@@ -1,5 +1,7 @@
 # Installing FEniCSx / DOLFINx 0.11
 
+[![Test the installation instructions](https://github.com/cmaurini/fenicsx-install/actions/workflows/test-install.yml/badge.svg)](https://github.com/cmaurini/fenicsx-install/actions/workflows/test-install.yml)
+
 Installation instructions and a self-test for the finite element library
 [DOLFINx](https://github.com/FEniCS/dolfinx) **0.11.0**, used in the numerical
 courses of the Solid Mechanics Master at Sorbonne Université.
