@@ -136,12 +136,11 @@ with io.XDMFFile(domain.comm, outdir / "elasticity.xdmf", "w") as xdmf:
     xdmf.write_function(uh)
     xdmf.write_function(von_mises)
 
-# Headless Linux (CI, a bare WSL shell, ssh) needs a virtual framebuffer.
+# On headless Linux (a server, a bare WSL shell) VTK has no way to draw and
+# will crash rather than raise. Say so, instead of failing obscurely.
 if platform.system() == "Linux" and not os.environ.get("DISPLAY"):
-    try:
-        pyvista.start_xvfb()
-    except Exception:
-        pass
+    print("no DISPLAY: if rendering crashes, install libosmesa6, "
+          "or rerun as  xvfb-run -a python elasticity.py")
 
 grid = pyvista.UnstructuredGrid(*plot.vtk_mesh(V))
 values = np.zeros((grid.n_points, 3))  # pyvista wants 3 components per point

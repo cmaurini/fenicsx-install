@@ -32,11 +32,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install OpenGL and a virtual framebuffer (Linux)
+      - name: Install OpenGL and off-screen rendering support (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1 libglx-mesa0 libxrender1 libxcursor1 xvfb
+          # libosmesa6 is what lets VTK render with no display at all. Without
+          # it VTK falls through X, then EGL, then segfaults.
+          sudo apt-get install -y libgl1 libglx-mesa0 libosmesa6 libxrender1 libxcursor1 xvfb
 
       - uses: conda-incubator/setup-miniconda@v3
         with:

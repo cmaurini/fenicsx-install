@@ -47,10 +47,10 @@ sudo apt install -y libgl1 libglx-mesa0
 On Ubuntu 20.04 and older that second package is called `libgl1-mesa-glx`.
 
 If you work on a machine with no screen at all — a compute server, or a bare WSL
-shell — add a virtual framebuffer as well:
+shell — add software rendering as well, so that PyVista can draw off-screen:
 
 ```bash
-sudo apt install -y xvfb
+sudo apt install -y libosmesa6 xvfb
 ```
 
 On Fedora or RHEL the equivalents are `gcc-c++`, `git`, `mesa-libGL` and

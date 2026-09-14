@@ -225,8 +225,23 @@ plotter = pyvista.Plotter(off_screen=True)
 plotter.screenshot("figure.png")
 ```
 
-On a headless Linux machine, install `xvfb` (`sudo apt install xvfb`) and call
-`pyvista.start_xvfb()` before plotting. `elasticity.py` already does both.
+On a headless Linux machine — a server, or a bare WSL shell — VTK has nothing
+to draw on and **crashes with a segmentation fault** rather than raising a
+Python error. Give it a software renderer:
+
+```bash
+sudo apt install -y libosmesa6
+```
+
+or run the script under a virtual framebuffer:
+
+```bash
+sudo apt install -y xvfb
+xvfb-run -a python elasticity.py
+```
+
+> Older tutorials call `pyvista.start_xvfb()`. That function was **removed in
+> PyVista 0.48** and raises `AttributeError`, so it cannot be the fix here.
 
 ### A notebook shows an empty box instead of a 3-D plot
 

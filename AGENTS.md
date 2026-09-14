@@ -127,8 +127,10 @@ situation rather than the message alone:
 - `libGL.so.1` missing → `sudo apt install -y libgl1 libglx-mesa0`. conda ships
   the OpenGL client libraries but not a driver.
 - Black window or crash under WSL → `export LIBGL_ALWAYS_SOFTWARE=1`.
-- No display at all (server, CI, bare shell) → render off-screen;
-  `pyvista.start_xvfb()` with `xvfb` installed.
+- No display at all (server, CI, bare shell) → `sudo apt install libosmesa6`,
+  or run under `xvfb-run -a`. VTK segfaults here rather than raising, so a
+  crash with no traceback usually means this. Note that `pyvista.start_xvfb()`
+  was **removed in PyVista 0.48**: do not suggest it.
 - Empty box in a notebook → `pyvista.set_jupyter_backend("trame")`.
 
 `elasticity.py` already handles the headless cases, so if *it* renders but the
