@@ -1,0 +1,17 @@
+# Results produced by elasticity.py
+output/
+*.h5
+*.xdmf
+*.msh
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+
+# Editors and OS
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,87 @@
+name: Test the installation instructions
+
+# Runs the same steps a student follows, so that breakage in upstream packages
+# shows up here rather than on their laptop.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * 1"   # every Monday morning
+
+jobs:
+  conda:
+    name: conda / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    defaults:
+      run:
+        shell: bash -el {0}   # -l so that conda activation is picked up
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OpenGL and a virtual framebuffer (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libglx-mesa0 libxrender1 libxcursor1 xvfb
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: fenicsx-0.11
+          channel-priority: strict
+
+      - name: Report versions
+        run: |
+          conda list fenics-dolfinx gmsh pyvista scifem
+          python -c "import dolfinx; assert dolfinx.__version__.startswith('0.11'), dolfinx.__version__"
+
+      - name: Run the installation test
+        run: python elasticity.py
+
+      - name: Check that both output files were written
+        run: |
+          test -s output/elasticity.xdmf
+          test -s output/elasticity.h5
+          test -s output/elasticity.png
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: output-conda-${{ matrix.os }}
+          path: output/
+
+  docker:
+    name: docker / dolfinx lab image
+    runs-on: ubuntu-latest
+    container: ghcr.io/fenics/dolfinx/lab:v0.11.0
+    env:
+      PYVISTA_OFF_SCREEN: "true"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the packages the image does not carry
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends libgl1-mesa-dev libxrender1 libxcursor1 xvfb
+          python3 -m pip install --no-cache-dir vtk "pyvista[all]>=0.48" gmsh
+
+      - name: Run the installation test
+        run: python3 elasticity.py
+
+      - name: Check that both output files were written
+        run: |
+          test -s output/elasticity.xdmf
+          test -s output/elasticity.png
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: output-docker
+          path: output/

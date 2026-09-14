@@ -1,0 +1,69 @@
+# Conda environment for DOLFINx 0.11 — Linux, macOS, and Windows via WSL2.
+#
+#   conda config --set channel_priority strict
+#   conda env create -f environment.yml
+#   conda activate fenicsx-0.11
+#
+# Note: channel priority must be set with the command above. Writing
+# `channel-priority: strict` as a key in this file is silently ignored by conda.
+#
+name: fenicsx-0.11
+channels:
+  - conda-forge
+dependencies:
+  # --- core FEniCSx stack ------------------------------------------------
+  - python>=3.11,<3.13     # scifem currently builds only for 3.11 and 3.12
+  - fenics-dolfinx=0.11.0
+  - mpich                  # one MPI flavour, consistently
+  - petsc4py
+  - slepc4py               # eigenvalue problems: stability, modal analysis
+  - scifem                 # point sources, real-space constraints, checkpointing
+
+  # --- meshing -----------------------------------------------------------
+  - gmsh
+  - python-gmsh            # the Python API is a separate conda-forge package
+  - meshio
+
+  # --- scientific python -------------------------------------------------
+  - numpy
+  - scipy
+  - sympy
+  - pandas
+
+  # --- plotting ----------------------------------------------------------
+  - matplotlib
+  - plotly
+  - seaborn
+  - pyvista
+
+  # --- pyvista interactive 3-D inside Jupyter (the practical answer in WSL)
+  - trame
+  - trame-vtk
+  - trame-vuetify
+  - ipywidgets
+
+  # --- notebooks ---------------------------------------------------------
+  - jupyterlab
+  - ipykernel
+  - jupytext
+  - jupyterlab-myst
+
+  # --- I/O and utilities -------------------------------------------------
+  - h5py
+  - pyyaml
+  - tqdm
+  - rich
+
+  # --- development and testing -------------------------------------------
+  - pytest
+  - nbmake
+  - ruff
+
+# Deliberately NOT included:
+#
+#   adios4dolfinx  conda-forge only has 0.10.0.post0, which would silently
+#                  downgrade DOLFINx to 0.10. If you need it, install it into
+#                  the activated environment afterwards:
+#                      pip install "adios4dolfinx>=0.11,<0.12"
+#
+#   numba          unused here, and a frequent source of solver conflicts.
