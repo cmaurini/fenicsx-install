@@ -30,7 +30,7 @@ jobs:
       run:
         shell: bash -el {0}   # -l so that conda activation is picked up
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install OpenGL and off-screen rendering support (Linux)
         if: runner.os == 'Linux'
@@ -40,7 +40,7 @@ jobs:
           # it VTK falls through X, then EGL, then segfaults.
           sudo apt-get install -y libgl1 libglx-mesa0 libosmesa6 libxrender1 libxcursor1 xvfb
 
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@v4
         with:
           miniforge-version: latest
           environment-file: environment.yml
@@ -62,7 +62,7 @@ jobs:
           test -s output/elasticity.h5
           test -s output/elasticity.png
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: output-conda-${{ matrix.os }}
           path: output/
@@ -75,7 +75,7 @@ jobs:
       PYVISTA_OFF_SCREEN: "true"
       LIBGL_ALWAYS_SOFTWARE: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install the packages the image does not carry
         run: |
@@ -91,7 +91,7 @@ jobs:
           test -s output/elasticity.xdmf
           test -s output/elasticity.png
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: output-docker
           path: output/
