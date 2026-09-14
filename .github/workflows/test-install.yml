@@ -37,10 +37,11 @@ jobs:
           environment-file: environment.yml
           activate-environment: fenicsx-0.11
           channel-priority: strict
+          conda-remove-defaults: "true"   # keep conda-forge the only channel
 
       - name: Report versions
         run: |
-          conda list fenics-dolfinx gmsh pyvista scifem
+          conda list "fenics-dolfinx|gmsh|pyvista|scifem"
           python -c "import dolfinx; assert dolfinx.__version__.startswith('0.11'), dolfinx.__version__"
 
       - name: Run the installation test
